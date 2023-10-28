@@ -15,14 +15,14 @@ import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 
 // Kaizen Dashboard components
-import SoftBox from "components/SoftBox";
-import SoftAvatar from "components/SoftAvatar";
-import SoftTypography from "components/SoftTypography";
+import SoftBox from "../../SoftBox";
+import SoftAvatar from "../../SoftAvatar";
+import SoftTypography from "../../SoftTypography";
 
 // Kaizen Dashboard base styles
-import colors from "../../base/colors";
-import typography from "../../base/typography";
-import borders from "../../base/borders";
+import colors from "../../../assets/theme/base/colors";
+import typography from "../../../assets/theme/base/typography";
+import borders from "../../../assets/theme/base/borders";
 
 function Table({ columns, rows }) {
   const { light } = colors;

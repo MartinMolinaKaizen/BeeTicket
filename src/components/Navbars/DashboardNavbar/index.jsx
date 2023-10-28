@@ -14,16 +14,15 @@ import Menu from "@mui/material/Menu";
 import Icon from "@mui/material/Icon";
 
 // Kaizen Dashboard components
-import SoftBox from "components/SoftBox";
-import SoftTypography from "components/SoftTypography";
-import SoftInput from "components/SoftInput";
-import Logout from "components/Modals/Logout";
-import ModalVersion from "components/Modals/Version";
-import {version} from "services/config";
+import SoftBox from "../../SoftBox";
+import SoftTypography from "../../SoftTypography";
+import Logout from "../../Modals/Logout";
+import ModalVersion from "../../Modals/Version";
+import {version} from "../../../services/config";
 
 // Kaizen Dashboard examples
-import Breadcrumbs from "components/Breadcrumbs";
-import NotificationItem from "components/Items/NotificationItem";
+import Breadcrumbs from "../../Breadcrumbs";
+import NotificationItem from "../../Items/NotificationItem";
 
 // Custom styles for DashboardNavbar
 import {
@@ -32,7 +31,7 @@ import {
   navbarRow,
   navbarIconButton,
   navbarMobileMenu,
-} from "components/Navbars/DashboardNavbar/styles";
+} from "../../Navbars/DashboardNavbar/styles";
 
 // Kaizen Dashboard context
 import {
@@ -40,12 +39,12 @@ import {
   setTransparentNavbar,
   setMiniSidenav,
   setOpenConfigurator,
-} from "context";
-import { UserContext } from "context/user";
+} from "../../../context";
+import { UserContext } from "../../../context/user";
 
 // Images
-import team2 from "assets/images/team-2.jpg";
-import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
+import team2 from "../../../assets/images/team-2.jpg";
+import logoSpotify from "../../../assets/images/small-logos/logo-spotify.svg";
 
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
@@ -192,17 +191,6 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 </IconButton>
 
               </SoftBox>
-              {/* <Link to="/empleado/perfil">
-                <IconButton sx={navbarIconButton} size="small">
-                  <Icon
-                    sx={({ palette: { dark, white } }) => ({
-                      color: light ? white.main : dark.main,
-                    })}
-                  >
-                    account_circle
-                  </Icon>
-                </IconButton>
-              </Link> */}
               <IconButton
                 size="small"
                 color="inherit"
@@ -213,35 +201,6 @@ function DashboardNavbar({ absolute, light, isMini }) {
                   {miniSidenav ? "menu_open" : "menu"}
                 </Icon>
               </IconButton>
-              {/*
-
-              // Icono para mensajes
-
-              <IconButton
-                size="small"
-                color="inherit"
-                sx={navbarIconButton}
-                onClick={handleConfiguratorOpen}
-              >
-                <Icon>message</Icon>
-              </IconButton>
-              */}
-              {/*
-
-              // Icono para notificaciones
-
-              <IconButton
-                size="small"
-                color="inherit"
-                sx={navbarIconButton}
-                aria-controls="notification-menu"
-                aria-haspopup="true"
-                variant="contained"
-                onClick={handleOpenMenu}
-              >
-                <Icon className={light ? "text-white" : "text-dark"}>notifications</Icon>
-              </IconButton> 
-              */}
               {renderMenu()}
             </SoftBox>
           </SoftBox>

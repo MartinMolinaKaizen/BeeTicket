@@ -9,15 +9,13 @@ import { useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 
 // Kaizen Dashboard components
-import SoftBox from "components/SoftBox";
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
+import SoftBox from "../../SoftBox";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 
 
 // Kaizen Dashboard context
-import { useSoftUIController, setLayout } from "context";
+import { useSoftUIController, setLayout } from "../../../context";
 
 
 const Alert = forwardRef(function Alert(props, ref) {

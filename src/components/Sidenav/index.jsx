@@ -28,6 +28,9 @@ import SidenavRoot from "../../components/Sidenav/SidenavRoot";
 // Kaizen Dashboard context
 import { useSoftUIController, setMiniSidenav } from "../../context";
 
+import EmojiPeopleOutlinedIcon from "@mui/icons-material/EmojiPeopleOutlined";
+
+
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useSoftUIController();
   const { miniSidenav, transparentSidenav } = controller;
@@ -59,6 +62,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const renderRoutes = routes.map(
     ({ type, name, icon, title, noCollapse, key, route, href, access }) => {
       let returnValue;
+      let IconComponent = icon
       const user = localStorage.getItem("user")
         ? JSON.parse(localStorage.getItem("user"))
         : null;
@@ -74,7 +78,8 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
             <SidenavCollapse
               color={color}
               name={name}
-              icon={icon}
+              // icon={<IconComponent />}
+              icon={<EmojiPeopleOutlinedIcon />}
               active={key === collapseName}
               noCollapse={noCollapse}
             />
@@ -85,7 +90,8 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
               color={color}
               key={key}
               name={name}
-              icon={icon}
+              // icon={<IconComponent />}
+              icon={<EmojiPeopleOutlinedIcon />}
               active={key === collapseName}
               noCollapse={noCollapse}
             />

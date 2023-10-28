@@ -3,11 +3,11 @@ import { Modal, Fade, Backdrop, Card, Grid, List, ListItem, Icon } from "@mui/ma
 import PropTypes from "prop-types";
 
 // Kaizen Dashboard components
-import SoftBox from "components/SoftBox";
-import SoftTypography from "components/SoftTypography";
-import SoftButton from "components/SoftButton";
+import SoftBox from "../../SoftBox";
+import SoftTypography from "../../SoftTypography";
+import SoftButton from "../../SoftButton";
 
-import { version } from "services/config";
+import { version } from "../../../services/config";
 
 const style = {
   position: "absolute",

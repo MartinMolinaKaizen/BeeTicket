@@ -1,42 +1,3 @@
-// import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-// import { rolesConAcceso, adminKey } from "./services/config";
-
-// import routes from "./routes";
-
-// function App() {
-
-  // const getRoutes = (allRoutes) =>
-  //   allRoutes.map((route) => {
-  //     if (route.collapse) {
-  //       return getRoutes(route.collapse);
-  //     }
-
-  //     if (route.route) {
-  //       const Component = route.component; // Extrae el componente
-  //       return (
-  //         <Route exact path={route.route} element={<Component />} key={"route-" + route.key} />
-  //       );
-  //     }
-
-  //     return null;
-  //   });
-
-//   return (
-//     <Routes>
-//       {getRoutes(routes)}
-//       <Route
-//         path="*"
-//         element={
-//           <Navigate to="/login" />
-//         }
-//       />
-//     </Routes>
-//   )
-// }
-
-// export default App
-
-
 import { useState, useEffect, useContext } from "react";
 import DeviceDetector from "device-detector-js";
 import { rolesConAcceso, adminKey } from "./services/config";
@@ -51,9 +12,7 @@ import {
   CircularProgress,
   Fade,
   Snackbar,
-  Alert,
-  Icon,
-  Tooltip,
+  Alert
 } from "@mui/material";
 
 // Kaizen Dashboard components
@@ -77,10 +36,6 @@ import { UserContext } from "./context/user";
 import brand from "./assets/images/logo.png";
 
 export default function App() {
-  // const {data: chatData} = useSubscription(CHAT_SUBSCRIPTION)
-  const userID = localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user")).user.id
-    : null;
 
   const [controller, dispatch] = useSoftUIController();
   const {
@@ -114,37 +69,39 @@ export default function App() {
     const deviceDetector = new DeviceDetector();
     const device = deviceDetector.parse(navigator.userAgent);
 
-    if (!user) {
-      if (pathname !== "/login") {
-        logout();
-      }
-      return;
-    }
+    if(!user) window.location.href = "/incidentes"
 
-    if (user.adminKey && user.adminKey === adminKey) {
-      return;
-    }
+    // if (!user) {
+    //   if (pathname !== "/login") {
+    //     logout();
+    //   }
+    //   return;
+    // }
 
-    const userRoutes = routes.filter((route) =>
-      route.access?.includes(user.id_rol)
-    );
-    const currentRoute = routes.find((route) => route.route === pathname);
+    // if (user.adminKey && user.adminKey === adminKey) {
+    //   return;
+    // }
 
-    if (device.device.type !== "desktop" && pathname !== "/empleado/perfil") {
-      window.location.href = "/empleado/perfil";
-    }
+    // const userRoutes = routes.filter((route) =>
+    //   route.access?.includes(user.id_rol)
+    // );
+    // const currentRoute = routes.find((route) => route.route === pathname);
 
-    if (currentRoute?.access) {
-      if (!currentRoute || !currentRoute.access.includes(user.id_rol)) {
-        if (device.device.type === "desktop") {
-          window.location.href = userRoutes[0].route;
-        } else {
-          window.location.href = "/empleado/perfil";
-        }
-      } else if (pathname === "/login") {
-        window.location.href = userRoutes[0].route;
-      }
-    }
+    // if (device.device.type !== "desktop" && pathname !== "/empleado/perfil") {
+    //   window.location.href = "/empleado/perfil";
+    // }
+
+    // if (currentRoute?.access) {
+    //   if (!currentRoute || !currentRoute.access.includes(user.id_rol)) {
+    //     if (device.device.type === "desktop") {
+    //       window.location.href = userRoutes[0].route;
+    //     } else {
+    //       window.location.href = "/empleado/perfil";
+    //     }
+    //   } else if (pathname === "/login") {
+    //     window.location.href = userRoutes[0].route;
+    //   }
+    // }
   }, [pathname, rolesConAcceso]);
 
   // Open sidenav when mouse enter on mini sidenav
@@ -174,20 +131,20 @@ export default function App() {
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
 
-  useEffect(() => {
-    if (
-      localStorage.getItem("user") === null &&
-      sessionStorage.getItem("user") === null &&
-      pathname !== "/login"
-    ) {
-      logout();
-    } else if (
-      (localStorage.getItem("user") !== null || sessionStorage.getItem("user") !== null) &&
-      pathname === "/login"
-    ) {
-      logout();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (
+  //     localStorage.getItem("user") === null &&
+  //     sessionStorage.getItem("user") === null &&
+  //     pathname !== "/login"
+  //   ) {
+  //     logout();
+  //   } else if (
+  //     (localStorage.getItem("user") !== null || sessionStorage.getItem("user") !== null) &&
+  //     pathname === "/login"
+  //   ) {
+  //     logout();
+  //   }
+  // }, []);
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {

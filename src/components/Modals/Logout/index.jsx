@@ -2,9 +2,9 @@ import * as React from "react";
 import { Modal, Fade, Backdrop, Card, Icon, Grid } from "@mui/material";
 import PropTypes from "prop-types";
 // Kaizen Dashboard components
-import SoftBox from "components/SoftBox";
-import SoftTypography from "components/SoftTypography";
-import SoftButton from "components/SoftButton";
+import SoftBox from "../../SoftBox";
+import SoftTypography from "../../SoftTypography";
+import SoftButton from "../../SoftButton";
 
 const style = {
   position: "absolute",

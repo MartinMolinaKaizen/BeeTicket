@@ -83,7 +83,7 @@ function SignIn() {
                   if (rememberMe) {
                     if (user_profile.id === "7") {
                       localStorage.setItem("user", JSON.stringify(user_profile));
-                      window.location.href = "/concurrentes";
+                      window.location.href = "/incidentes";
                     } else {
                       localStorage.setItem("user", JSON.stringify(user_profile));
                     }
@@ -97,7 +97,7 @@ function SignIn() {
                   if (user_profile.id_rol && rolesConAcceso.includes(user_profile.id_rol)) {
                     window.location.href = userRoutes[0].route;
                   } else {
-                    window.location.href = "/concurrentes";
+                    window.location.href = "/incidentes";
                   }
                 }
               });
@@ -111,86 +111,11 @@ function SignIn() {
           }
           setLoading(false);
         });
-
-      // if (rememberMe) {
-      //   localStorage.setItem("user", JSON.stringify(user));
-      // } else {
-      //   sessionStorage.setItem("user", JSON.stringify(user));
-      // }
-
-      // if (result.data.login !== null) {
-      //   const user = result.data.login;
-      //   const deviceDetector = new DeviceDetector();
-      //   const device = deviceDetector.parse(navigator.userAgent);
-      //   if (rememberMe) {
-      //     localStorage.setItem("user", JSON.stringify(user));
-      //   } else {
-      //     sessionStorage.setItem("user", JSON.stringify(user));
-      //   }
-
-      //   if (user.user.empleado) {
-      //     if (user.user.empleado.puesto && rolesConAcceso.includes(user.user.empleado.puesto.id)) {
-      //       if (device.device.type === "desktop") {
-      //         window.location.href = "/empleados";
-      //       } else {
-      //         window.location.href = "/empleado/perfil";
-      //       }
-      //     } else {
-      //       window.location.href = "/empleado/perfil";
-      //     }
-      //   }else{
-      //     window.location.href = "/empleados";
-      //   }
-      // }
     } else {
       setEmptyFields(true);
       setLoading(false);
     }
 
-    // event.preventDefault();
-    // setErrorLogin(null);
-    // if (username !== "" && password !== "") {
-    //   setEmptyFields(false);
-    //   loginUser({
-    //     variables: {
-    //       userInput: {
-    //         username: username,
-    //         password: sha512(password),
-    //       },
-    //     },
-    //   })
-    //     .then((result) => {
-    //       if (result.data.login !== null) {
-    //         const user = result.data.login;
-    //         const deviceDetector = new DeviceDetector();
-    //         const device = deviceDetector.parse(navigator.userAgent);
-    //         if (rememberMe) {
-    //           localStorage.setItem("user", JSON.stringify(user));
-    //         } else {
-    //           sessionStorage.setItem("user", JSON.stringify(user));
-    //         }
-
-    //         if (user.user.empleado) {
-    //           if (user.user.empleado.puesto && rolesConAcceso.includes(user.user.empleado.puesto.id)) {
-    //             if (device.device.type === "desktop") {
-    //               window.location.href = "/empleados";
-    //             } else {
-    //               window.location.href = "/empleado/perfil";
-    //             }
-    //           } else {
-    //             window.location.href = "/empleado/perfil";
-    //           }
-    //         }else{
-    //           window.location.href = "/empleados";
-    //         }
-    //       }
-    //     })
-    //     .catch((error) => {
-    //       setErrorLogin(error.message);
-    //     });
-    // } else {
-    //   setEmptyFields(true);
-    // }
   };
 
   useEffect(() => {

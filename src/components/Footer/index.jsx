@@ -5,12 +5,12 @@ import PropTypes from "prop-types";
 import Link from "@mui/material/Link";
 
 // Kaizen Dashboard components
-import SoftBox from "components/SoftBox";
-import SoftTypography from "components/SoftTypography";
+import SoftBox from "../SoftBox";
+import SoftTypography from "../SoftTypography";
 
 // Kaizen Dashboard base styles
-import typography from "../../base/typography";
-import { version } from "services/config";
+import typography from "../../assets/theme/base/typography";
+import { version } from "../../services/config";
 
 function Footer({ company, links }) {
   const { href, name } = company;

@@ -10,11 +10,11 @@ import MenuItem from "@mui/material/MenuItem";
 import Icon from "@mui/material/Icon";
 
 // Kaizen Dashboard components
-import SoftBox from "components/SoftBox";
-import SoftTypography from "components/SoftTypography";
+import SoftBox from "../../SoftBox";
+import SoftTypography from "../../SoftTypography";
 
 // custom styles for the NotificationItem
-import { menuItem, menuImage } from "components/Items/NotificationItem/styles";
+import { menuItem, menuImage } from "./styles";
 
 const NotificationItem = forwardRef(({ color, image, title, date, ...rest }, ref) => (
   <MenuItem {...rest} ref={ref} sx={(theme) => menuItem(theme)}>
