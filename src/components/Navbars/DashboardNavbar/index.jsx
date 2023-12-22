@@ -23,6 +23,7 @@ import {version} from "../../../services/config";
 // Kaizen Dashboard examples
 import Breadcrumbs from "../../Breadcrumbs";
 import NotificationItem from "../../Items/NotificationItem";
+import brand from "../../../assets/images/logo.webp";
 
 // Custom styles for DashboardNavbar
 import {
@@ -162,6 +163,9 @@ function DashboardNavbar({ absolute, light, isMini }) {
     >
       <Toolbar sx={(theme) => navbarContainer(theme)}>
         <SoftBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
+        <SoftBox mr={2}>
+        <SoftBox component="img" src={brand} alt="Kaizen Logo" width="200px" />
+        </SoftBox>
           <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
         </SoftBox>
         {isMini ? null : (
@@ -206,7 +210,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
           </SoftBox>
         )}
       </Toolbar>
-      <Logout open={openLogout} handleClose={handleCloseLogout} btnFunction={logout}/>
+      <Logout open={openLogout} handleClose={handleCloseLogout} btnFunction={() => logout()}/>
       <ModalVersion open={openVersion} handleClose={handleCloseVersion}/> 
     </AppBar>
   );

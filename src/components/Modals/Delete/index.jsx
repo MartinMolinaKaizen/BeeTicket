@@ -3,9 +3,9 @@ import { Modal, Fade, Backdrop, Card, Grid } from "@mui/material";
 import PropTypes from "prop-types";
 
 // Kaizen Dashboard components
-import SoftBox from "components/SoftBox";
-import SoftTypography from "components/SoftTypography";
-import SoftButton from "components/SoftButton";
+import SoftBox from "../../SoftBox";
+import SoftTypography from "../../SoftTypography";
+import SoftButton from "../../SoftButton";
 
 const style = {
   position: "absolute",
@@ -16,7 +16,7 @@ const style = {
   py: 4,
 };
 
-export default function Modaldelete({ open, handleClose, nombre, functionDelete }) {
+export default function Modaldelete({ open, handleClose, functionDelete }) {
   return (
     <Modal
       aria-labelledby="transition-modal-title"
@@ -37,7 +37,7 @@ export default function Modaldelete({ open, handleClose, nombre, functionDelete 
           <SoftBox px={3}>
             <Grid container justifyContent="start" alignItems="center" pb={1} pt={2}>
               <SoftTypography variant="h6" fontWeight="light">
-                ¿Esta seguro que quiere eliminar <b>{nombre}</b>? Presione eliminar para confirmar 
+                ¿Esta seguro que quiere eliminar este incidente? Presione eliminar para confirmar 
               </SoftTypography>
             </Grid>
           </SoftBox>

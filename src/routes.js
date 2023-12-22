@@ -1,6 +1,8 @@
 import SignIn from "./layouts/authentication/sign-in";
-import EmojiPeopleOutlinedIcon from "@mui/icons-material/EmojiPeopleOutlined";
+import ReportIcon from '@mui/icons-material/Report';
 import Incidents from "./layouts/incidentes"
+import NewIncident from "./layouts/incidentes/add";
+import EditIncident from "./layouts/incidentes/edit";
 
 
 const routes = [
@@ -9,9 +11,20 @@ const routes = [
     name: "Incidentes",
     key: "incidentes",
     route: "/incidentes",
-    // icon: EmojiPeopleOutlinedIcon,
+    icon: ReportIcon,
+    access: ["55"],
     component: Incidents,
     noCollapse: true
+  },
+  {
+    route: "/incidentes/nuevo",
+    component: NewIncident,
+    access: ["55"],
+  },
+  {
+    route: "/incidentes/incidente",
+    component: EditIncident,
+    access: ["55"],
   },
   {
     route: "/login",

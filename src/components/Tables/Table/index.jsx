@@ -29,7 +29,7 @@ function Table({ columns, rows }) {
   const { size, fontWeightBold } = typography;
   const { borderWidth } = borders;
 
-  const renderColumns = columns.map(({ name, align, width, desc }, key) => {
+  const renderColumns = columns?.map(({ name, align, width, desc }, key) => {
     let pl;
     let pr;
 
@@ -60,16 +60,16 @@ function Table({ columns, rows }) {
         opacity={0.7}
         borderBottom={`${borderWidth[1]} solid ${light.main}`}
       >
-        
+
         {desc ? desc.toUpperCase() : name.toUpperCase()}
       </SoftBox>
     );
   });
 
-  const renderRows = rows.map((row, key) => {
+  const renderRows = rows?.map((row, key) => {
     const rowKey = `row-${key}`;
 
-    const tableRow = columns.map(({ name, align }) => {
+    const tableRow = columns?.map(({ name, align }) => {
       let template;
 
       if (Array.isArray(row[name])) {
@@ -114,7 +114,7 @@ function Table({ columns, rows }) {
       return template;
     });
 
-    return <TableRow key={rowKey}>{tableRow}</TableRow>;
+    return <TableRow hover={true} key={rowKey}>{tableRow}</TableRow>;
   });
 
   return useMemo(

@@ -8,7 +8,7 @@ import { SoftUIControllerProvider, MessageManagerProvider } from "./context";
 import { UserProvider } from "./context/user.jsx";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <UserProvider>
       <BrowserRouter>
         <SoftUIControllerProvider>
@@ -18,5 +18,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </SoftUIControllerProvider>
       </BrowserRouter>
     </UserProvider>
-  </React.StrictMode>,
+  // </React.StrictMode>,
 )

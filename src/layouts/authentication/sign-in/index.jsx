@@ -56,7 +56,7 @@ function SignIn() {
           const user = {
             user: username,
             password: password,
-            token: res.data.token,
+            token: res.data.token || 'sin token'
           };
 
           if (res.data.token !== null) {
@@ -65,18 +65,10 @@ function SignIn() {
                 headers: { Authorization: `Bearer ${user.token}` },
               })
               .then((res) => {
-                // const user_profile = {
-                //   id: res.data.userData.id,
-                //   user: res.data.userData.name,
-                //   adminKey: adminKey,
-                //   token: user.token,
-                //   id_rol: res.data.userData.id_rol,
-                //   idProfesional: res.data.idProfesional,
-                // };
-
                 const user_profile = {
-                  ...res.data.userData,
-                  idProfesional: res.data.idProfesional,
+                  ...res.data,
+                  token: user.token,
+                  idProfesional: res.data?.idProfesional || 7,
                 };
 
                 if (user_profile) {
@@ -86,25 +78,28 @@ function SignIn() {
                       window.location.href = "/incidentes";
                     } else {
                       localStorage.setItem("user", JSON.stringify(user_profile));
+                      window.location.href = "/incidentes";
                     }
                   } else {
                     sessionStorage.setItem("user", JSON.stringify(user_profile));
                   }
 
                   const userRoutes = routes.filter((route) =>
-                    route.access?.includes(user_profile.id_rol)
+                    route.access?.includes(user_profile?.id_rol)
                   );
-                  if (user_profile.id_rol && rolesConAcceso.includes(user_profile.id_rol)) {
+
+
+                  if (user_profile?.id_rol && rolesConAcceso.includes(user_profile?.id_rol)) {
                     window.location.href = userRoutes[0].route;
                   } else {
-                    window.location.href = "/incidentes";
+                    // window.location.href = "/incidentes";
                   }
                 }
               });
           }
         })
         .catch((error) => {
-          if (error.response.status == 401) {
+          if (error.response?.status == 401) {
             setErrorLogin("Usuario o contraseña incorrectos");
           } else {
             setErrorLogin("Error al iniciar sesión");

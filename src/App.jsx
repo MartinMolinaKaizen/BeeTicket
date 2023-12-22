@@ -34,6 +34,7 @@ import { UserContext } from "./context/user";
 
 // Images
 import brand from "./assets/images/logo.png";
+import SoftTypography from "./components/SoftTypography/index.jsx";
 
 export default function App() {
 
@@ -51,6 +52,8 @@ export default function App() {
   const { pathname } = useLocation();
   const [loadingSpinner, setLoadingSpinner] = useState(true);
   const { logout } = useContext(UserContext);
+  const [noAccess, setNoAccess] = useState(false);
+  const [seconds, setSeconds] = useState(5);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -58,7 +61,7 @@ export default function App() {
     }
     closeSnackbar();
   };
-  
+
 
   useEffect(() => {
     setLoadingSpinner(false);
@@ -69,39 +72,42 @@ export default function App() {
     const deviceDetector = new DeviceDetector();
     const device = deviceDetector.parse(navigator.userAgent);
 
-    if(!user) window.location.href = "/incidentes"
+    if (!user) {
+      if (pathname !== "/login") {
+        logout();
+      }
+      return;
+    }
 
-    // if (!user) {
-    //   if (pathname !== "/login") {
-    //     logout();
-    //   }
-    //   return;
-    // }
+    if (user.adminKey && user.adminKey === adminKey) {
+      return;
+    }
 
-    // if (user.adminKey && user.adminKey === adminKey) {
-    //   return;
-    // }
+    const userRoutes = routes.filter((route) =>
+      route.access?.includes(user.id_rol)
+    );
 
-    // const userRoutes = routes.filter((route) =>
-    //   route.access?.includes(user.id_rol)
-    // );
-    // const currentRoute = routes.find((route) => route.route === pathname);
+    if (userRoutes.length === 0) {
+      setNoAccess(true);
+      setTimeout(() => {
+        logout();
+      }, 2500);
+    }
 
-    // if (device.device.type !== "desktop" && pathname !== "/empleado/perfil") {
-    //   window.location.href = "/empleado/perfil";
-    // }
+    const currentRoute = routes.find((route) => route.route === pathname);
 
-    // if (currentRoute?.access) {
-    //   if (!currentRoute || !currentRoute.access.includes(user.id_rol)) {
-    //     if (device.device.type === "desktop") {
-    //       window.location.href = userRoutes[0].route;
-    //     } else {
-    //       window.location.href = "/empleado/perfil";
-    //     }
-    //   } else if (pathname === "/login") {
-    //     window.location.href = userRoutes[0].route;
-    //   }
-    // }
+    if (currentRoute?.access) {
+      if (!currentRoute || !currentRoute.access.includes(user.id_rol)) {
+        if (device.device.type === "desktop") {
+          window.location.href = userRoutes[0]?.route;
+        } else {
+          window.location.href = "/incidentes"
+        }
+      } else if (pathname === "/login") {
+        window.location.href = userRoutes[0].route;
+      }
+    }
+
   }, [pathname, rolesConAcceso]);
 
   // Open sidenav when mouse enter on mini sidenav
@@ -131,20 +137,20 @@ export default function App() {
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
 
-  // useEffect(() => {
-  //   if (
-  //     localStorage.getItem("user") === null &&
-  //     sessionStorage.getItem("user") === null &&
-  //     pathname !== "/login"
-  //   ) {
-  //     logout();
-  //   } else if (
-  //     (localStorage.getItem("user") !== null || sessionStorage.getItem("user") !== null) &&
-  //     pathname === "/login"
-  //   ) {
-  //     logout();
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (
+      localStorage.getItem("user") === null &&
+      sessionStorage.getItem("user") === null &&
+      pathname !== "/login"
+    ) {
+      logout();
+    } else if (
+      (localStorage.getItem("user") !== null || sessionStorage.getItem("user") !== null) &&
+      pathname === "/login"
+    ) {
+      logout();
+    }
+  }, []);
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
@@ -153,7 +159,7 @@ export default function App() {
       }
 
       if (route.route) {
-        const Component = route.component; // Extrae el componente
+        const Component = route.component;
         return (
           <Route exact path={route.route} element={<Component />} key={"route-" + route.key} />
         );
@@ -168,6 +174,14 @@ export default function App() {
         <Fade in={loadingSpinner} appear={true} timeout={1000}>
           <CircularProgress />
         </Fade>
+      </SoftBox>
+    </ThemeProvider>
+  ) : noAccess ? (
+    <ThemeProvider theme={theme}>
+      <SoftBox display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <SoftTypography variant="h3" color="text">
+          Error: usuario sin acceso
+        </SoftTypography>
       </SoftBox>
     </ThemeProvider>
   ) : (
@@ -187,7 +201,7 @@ export default function App() {
       </Snackbar>
 
       <CssBaseline />
-      {layout === "dashboard" && (pathname !== "/login" && pathname !== "/empleado/perfil") && (
+      {/* {layout === "dashboard" && (pathname !== "/login" && pathname !== "/empleado/perfil") && (
         <>
           <Sidenav
             color={sidenavColor}
@@ -198,13 +212,13 @@ export default function App() {
             onMouseLeave={handleOnMouseLeave}
           />
         </>
-      )}
+      )} */}
       <Routes>
         {getRoutes(routes)}
         <Route
           path="*"
           element={
-            <Navigate to="/login" />
+            <Navigate to="/incidentes" />
           }
         />
       </Routes>

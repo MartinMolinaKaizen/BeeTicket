@@ -1,6 +1,7 @@
 // @mui material components
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import Card from "@mui/material/Card";
+import { Alert, Stack } from "@mui/material";
 
 // Kaizen Dashboard components
 import SoftBox from "../../components/SoftBox";
@@ -14,296 +15,326 @@ import Table from "../../components/Tables/Table";
 import SoftButton from "../../components/SoftButton";
 import SoftInput from "../../components/SoftInput";
 import Icon from "@mui/material/Icon";
-import { indigo, blue } from "@mui/material/colors";
+import TresPuntos from './components/TresPuntos';
+import Modaldelete from "../../components/Modals/Delete";
 
 // Data
-// import ModalDelete from "./components/ModalDelete"
 import { Link } from "react-router-dom";
-import { urlBase } from "../../services/config";
-import axios from "axios";
-import { CircularProgress, Grid, Pagination, Tooltip } from "@mui/material";
-import { formatMoneyPunto, formatDate } from "../../utils/formatters";
-// import ModalDetalle from "../../components";
+import { CircularProgress, Grid, InputLabel, MenuItem, Pagination, Select } from "@mui/material";
+import { formatDate } from "../../utils/formatters";
+import useGetIncidentes from "./hooks/useGetIncidentes";
+import useDeleteIncidente from "./hooks/useDeleteIncidente";
+import useGetProyectos from "./hooks/useGetProyectos";
 
-const baseURL = urlBase + "concurrentes";
+
+function Columna({ variant, color, fontWeight, nombre, fecha }) {
+  if (fecha) {
+    return (<SoftTypography variant={variant} color={color} fontWeight={fontWeight}>
+      {nombre ? formatDate(nombre) : "Sin especificar"}
+    </SoftTypography>)
+  } else {
+    return (
+      <SoftTypography variant={variant} color={color} fontWeight={fontWeight}>
+        {nombre ? nombre : "Sin especificar"}
+      </SoftTypography>
+    )
+  }
+}
 
 function Incidentes() {
-    const [modalDelete, setModalDelete] = useState(false);
-    const [concurrentes, setConcurrentes] = useState([]);
-    const [post, setPost] = useState(null);
-    const [searchInput, setSearchInput] = useState("");
-    const [modalNomencladorOpen, setModaNomencladorOpen] = useState(false);
-    const [row, setRow] = useState([]);
-    const [modalDetalles, setModalDetalles] = useState(false);
-    const [detallesConcurrente, setDetallesConcurrente] = useState(null);
+  const [row, setRow] = useState([]);
+  const [deleteIncident, loadingDelete] = useDeleteIncidente();
+  const [openDelete, setOpenDelete] = useState(false);
+  const [idToDelete, setIdToDelete] = useState(null);
+  const [proyectos, setProyectos] = useState([]);
+  const [pagina, setPagina] = useState(1);
+  const { loading, datosVacios, refresh, isAdmin, noEncontrado, getIncByProyect, cantidadPaginas } = useGetIncidentes(adapterInc, pagina);
+  const [filters, setFilters] = useState({
+    inputSearch: "",
+    inputSelect: "SELECCIONAR"
+  });
+  const [alertCartel, setAlertCartel] = useState("")
 
-    const [filtro, setFiltro] = useState("");
+  useGetProyectos(adapterProyects);
 
-    const [pagina, setPagina] = useState(1);
-    const [cantidadPaginas, setCantidadPaginas] = useState(1);
+  const columns = [
+    { name: "fechaCargaIncidente", align: "center", desc: "Fecha de Carga" },
+    { name: "incidente_keyId", desc: "ID Incidente", align: "center" },
+    { name: "emisor", align: "center" },
+    { name: "descripcionEmisor", align: "center", desc: "Descripcion del Emisor" },
+    { name: "prioridad", align: "center" },
+    { name: "estado", align: "center" },
+    { name: "receptor", align: "center" },
+    { name: "fechaResolucionIncidente", align: "center", desc: "Fecha de Resolucion" },
+    { name: "action", align: "center", desc: "Acción" },
+  ]
 
-    const [loading, setLoading] = useState(false);
-    const [datosVacios, setDatosVacios] = useState(false);
+  const getRows = (items) => {
+    let arrayRows = [];
+    items.forEach((element) => {
+      const { incidente_id } = element
+      let newItem = {
+        fechaCargaIncidente: <Columna variant="caption" color="secondary" fontWeight="medium" nombre={element?.fechaCargaIncidente} fecha={true} />,
+        incidente_keyId: (
+          <Link to="/incidentes/incidente" state={{ incidente_id }}>
+            <SoftTypography variant="caption" color="secondary" fontWeight="medium">
+              {element?.incidente_keyId ? element.incidente_keyId : "Sin especificar"}
+            </SoftTypography>
+          </Link>
+        ),
+        emisor: <Columna variant="caption" color="secondary" fontWeight="medium" nombre={element?.emisor} fecha={false} />,
+        descripcionEmisor: <Columna variant="caption" color="secondary" fontWeight="medium" nombre={element?.descripcionEmisor} fecha={false} />,
+        receptor: <Columna variant="caption" color="secondary" fontWeight="medium" nombre={element?.receptor} fecha={false} />,
+        prioridad: <Columna variant="caption" color="secondary" fontWeight="medium" nombre={element?.prioridad} fecha={false} />,
+        estado: <Columna variant="caption" color="secondary" fontWeight="medium" nombre={element?.estado} fecha={false} />,
+        fechaResolucionIncidente: <Columna variant="caption" color="secondary" fontWeight="medium" nombre={element?.fechaResolucionIncidente} fecha={true} />,
+        action: <TresPuntos incidente_id={incidente_id} borrar={() => { setIdToDelete(element?.incidente_id); setOpenDelete(true) }} />
+      };
+      arrayRows.push(newItem);
+    });
+    return arrayRows;
+  };
 
-    const [concurrenteABuscar, setConcurrenteABuscar] = useState("");
+  const fntDe = () => {
+    deleteIncident(idToDelete, refresh);
+  }
 
+  //paginacion
+  function handlePagination(event, value) {
+    setPagina(value);
+  };
 
+  function adapterInc(incidentes) {
+    setRow(getRows(incidentes))
+  }
 
-    const columns = [
-        { name: "apellido", align: "center" },
-        { name: "nombre", align: "center" },
-        { name: "dni", align: "center" },
-        { name: "fechaNacimiento", align: "center", desc: "Fecha nac." },
-        { name: "programa", align: "center" },
-        { name: "action", align: "center", desc: "Acción" },
-    ];
+  function adapterProyects(proyectos) {
+    let proyects = proyectos.map(p => p.empresa)
+    setProyectos(proyects);
+  }
 
-    const getRows = (items) => {
-        let arrayRows = [];
-        items.forEach((element) => {
-            let newItem = {
-                nombre: (
-                    <SoftTypography variant="caption" color="secondary" fontWeight="medium">
-                        {element?.nombre ?? "Sin especificar"}
-                    </SoftTypography>
-                ),
-                apellido: (
-                    <SoftTypography variant="caption" color="secondary" fontWeight="medium">
-                        {element?.apellido ?? "Sin especificar"}
-                    </SoftTypography>
-                ),
-                dni: (
-                    <SoftTypography variant="caption" color="secondary" fontWeight="medium">
-                        {formatMoneyPunto(element?.dni) ?? "Sin especificar"}
-                    </SoftTypography>
-                ),
-                fechaNacimiento: (
-                    <SoftTypography variant="caption" color="secondary" fontWeight="medium">
-                        {element?.fechaNacimiento ? formatDate(element?.fechaNacimiento) : "Sin especificar"}
-                    </SoftTypography>
-                ),
-                programa: (
-                    <SoftTypography variant="caption" color="secondary" fontWeight="medium">
-                        {element?.programa ?? "Sin especificar"}
-                    </SoftTypography>
-                ),
-                action: (
-                    <>
-                        <Tooltip title="Ver detalle" placement="top">
-                            <Icon
-                                fontSize="small"
-                                color="dark"
-                                id={element.id}
-                                sx={{ cursor: "pointer" }}
-                                onClick={() => {
-                                    verDetalles(element);
-                                }}
-                            >
-                                visibility
-                            </Icon>
-                        </Tooltip>
-                        <Link to="/concurrentes/editar" state={{ element }}>
-                            <Icon fontSize="small" color="primary" id={element.id} sx={{ cursor: "pointer", mx: 1 }}>
-                                edit
-                            </Icon>
-                        </Link>
-                        <Icon
-                            fontSize="small"
-                            id={element.id}
-                            sx={{ cursor: "pointer", color: indigo[900] }}
-                            onClick={handleDelete}
+  const searchFunction = () => {
+    if (filters.inputSelect !== "SELECCIONAR") {
+      getIncByProyect(filters.inputSelect);
+    } else if (filters.inputSearch !== "") {
+      refresh(filters.inputSearch);
+    } else {
+      refresh()
+    }
+  }
+
+  useEffect(() => {
+    searchFunction();
+  }, [pagina]);
+
+  return (
+    // <DashboardLayout>
+    <SoftBox p={4}>
+      <DashboardNavbar />
+      <SoftBox py={3}>
+        <SoftBox mb={3}>
+          <Card>
+            <Grid container spacing={2} alignItems="center" /*sx={{ backgroundColor: "pink" }}*/ px={3}>
+              {/* <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}> */}
+              <Grid item xs={3} /*sx={{ backgroundColor: "green" }}*/>
+                <SoftTypography variant="button" fontWeight="bold" textTransform="capitalize">Incidentes</SoftTypography>
+              </Grid>
+              <Grid item xs={9}>
+                <Grid container pt={2} pb={3} justifyContent="end" alignItems="center" /*sx={{ backgroundColor: "lightblue" }}*/>
+                  {/* <SoftBox display="flex" justifyContent="end" alignItems="center" py={3}> */}
+                  <Grid item xs={7} pl={5} pr={40} pb={isAdmin ? 2.5 : 11} /*sx={{ backgroundColor: "yellow" }}*/>
+                    {
+                      isAdmin ? (<>
+                        <InputLabel>
+                          <SoftTypography component="small" variant="button" fontWeight="regular">
+                            Empresa
+                          </SoftTypography>
+                        </InputLabel>
+                        <Select
+                          value={filters.inputSelect}
+                          onChange={(e) => {
+                            const { value } = e.target
+                            if (value === "SELECCIONAR") {
+                              setFilters({
+                                inputSearch: "",
+                                inputSelect: "SELECCIONAR"
+                              });
+                              setPagina(1);
+                              setAlertCartel("")
+                              refresh();
+                            } else {
+                              setFilters({
+                                inputSearch: "",
+                                inputSelect: value
+                              })
+                              setPagina(1);
+                              setAlertCartel(value)
+                              getIncByProyect(value);
+                            }
+                          }}
                         >
-                            delete
-                        </Icon>
-                    </>
-                ),
-            };
-            arrayRows.push(newItem);
-        });
-        return arrayRows;
-    };
-
-    const handleDelete = (e) => {
-        setPost(concurrentes.find((cliente) => cliente.id === parseInt(e.target.id)));
-        handleOpenModalDelete();
-    };
-
-    const verDetalles = (e) => {
-        setDetallesConcurrente(e);
-        setModalDetalles(true);
-    }
-
-    const getConcurrentes = async () => {
-        setLoading(true);
-        try {
-            const promesa = await axios.get(urlBase + "concurrentes_page?page=" + pagina);
-            if (promesa.data) {
-                if (promesa.data.data.length < 1) {
-                    setDatosVacios(true);
-                }
-                setConcurrentes(promesa.data.data);
-                setCantidadPaginas(promesa.data.meta.last_page);
-            }
-
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    const handleCloseModalDelete = () => {
-        setModalDelete(false);
-    };
-
-    const handleOpenModalDelete = () => {
-        setModalDelete(true);
-    };
-
-    useEffect(() => {
-        if (concurrentes.length != 0) {
-            setDatosVacios(false);
-            setRow(getRows(concurrentes));
-        }
-    }, [concurrentes]);
-
-    //paginacion
-    const handlePagination = (event, value) => {
-        setPagina(value);
-    };
-
-    useEffect(() => {
-        if (concurrenteABuscar.length > 0) {
-            searchConcurrente(concurrenteABuscar);
-        } else {
-            getConcurrentes();
-        }
-    }, [pagina]);
-
-    useEffect(() => {
-        if (filtro === "") {
-            setPagina(1);
-            getConcurrentes();
-            setConcurrenteABuscar("");
-        }
-    }, [filtro]);
-
-    //buscardor
-    const handleFiltro = (e) => {
-        setFiltro(e.target.value);
-    }
-
-    const handleSearch = () => {
-        setPagina(1);
-        setConcurrenteABuscar(filtro);
-        searchConcurrente(filtro);
-    };
-
-    const searchConcurrente = async (searchText) => {
-        setLoading(true);
-        try {
-            const promesa = await axios.get(urlBase + "searchConcurrentes/" + searchText + "?page=" + pagina);
-            if (promesa.data) {
-                if (promesa.data.data.length < 1) {
-                    setDatosVacios(true);
-                }
-                setConcurrentes(promesa.data.data);
-                setCantidadPaginas(promesa.data.meta.last_page);
-            }
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(false);
-        }
-    }
-
-
-    return (
-        <DashboardLayout>
-            <DashboardNavbar />
-            <SoftBox py={3}>
-                <SoftBox mb={3}>
-                    <Card>
-                        <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-                            <SoftTypography variant="h6">Incidentes</SoftTypography>
-                            <SoftBox display="flex" justifyContent="end" alignItems="center" py={3}>
-                                <SoftBox mr={2}>
-                                    <SoftInput
-                                        placeholder="Buscar..."
-                                        icon={{ component: "search", direction: "left" }}
-                                        onChange={handleFiltro}
-                                        value={filtro}
-                                        onKeyDown={(e) => {
-                                            if (e.key === "Enter") {
-                                                handleSearch();
-                                            }
-                                        }}
-                                    />
-                                </SoftBox>
-                                <SoftBox sx={{ mr: 2 }}>
-                                    <SoftButton
-                                        variant="gradient"
-                                        color="primary"
-                                        onClick={() => setModaNomencladorOpen(true)}
-                                    >
-                                        <Icon>add</Icon>&nbsp; Valor Nomenclador
-                                    </SoftButton>
-                                </SoftBox>
-                                <SoftBox>
-                                    <Link to="/concurrentes/nuevo">
-                                        <SoftButton variant="gradient" color="dark">
-                                            <Icon>add</Icon>&nbsp; Agregar
-                                        </SoftButton>
-                                    </Link>
-                                </SoftBox>
-                            </SoftBox>
-                        </SoftBox>
-                        {loading ? (
-                            <SoftBox display="flex" justifyContent="center" m={3}>
-                                <CircularProgress color="primary" />
-                            </SoftBox>
-                        ) : (
-                            <SoftBox
-                                sx={{
-                                    "& .MuiTableRow-root:not(:last-child)": {
-                                        "& td": {
-                                            borderBottom: ({ borders: { borderWidth, borderColor } }) =>
-                                                `${borderWidth[1]} solid ${borderColor}`,
-                                        },
-                                    },
-                                }}
-                            >
-                                {!datosVacios ? (
-                                    <Table columns={columns} rows={row} />
-                                ) : (
-                                    <Grid container justifyContent="center" alignItems="center" py={3}>
-                                        <Grid item pb={3}>
-                                            <SoftTypography variant="caption" color="text">
-                                                No hay datos cargados
-                                            </SoftTypography>
-                                        </Grid>
-                                    </Grid>
-                                )}
-                            </SoftBox>
-                        )}
-                    </Card>
-                    <Card sx={{ mt: 2 }}>
-                        <Grid display="flex" alignItems="center" justifyContent="center" py={2}>
-                            <Pagination
-                                count={cantidadPaginas}
-                                defaultPage={1}
-                                siblingCount={1}
-                                color="primary"
-                                page={pagina}
-                                onChange={handlePagination}
-                            />
-                        </Grid>
-                    </Card>
-                </SoftBox>
-            </SoftBox>
-            <Footer />
-        </DashboardLayout>
-    );
+                          <MenuItem value="SELECCIONAR">
+                            <em>SELECCIONAR</em>
+                          </MenuItem>
+                          {
+                            proyectos.map((proy) => {
+                              return (
+                                <MenuItem key={proy} value={proy}>
+                                  {proy}
+                                </MenuItem>
+                              )
+                            })
+                          }
+                        </Select>
+                      </>) : null
+                    }
+                  </Grid>
+                  <Grid item xs={3} mr={2} /*sx={{ backgroundColor: "blue" }}*/>
+                    {/* <SoftBox mr={2}> */}
+                    <SoftInput
+                      placeholder="Buscar..."
+                      icon={{ component: "search", direction: "left" }}
+                      value={filters.inputSearch}
+                      onChange={(e) => {
+                        setFilters({
+                          inputSearch: e.target.value.trim() ? e.target.value : "",
+                          inputSelect: "SELECCIONAR"
+                        })
+                        if (!e.target.value.trim()) {
+                          setPagina(1);
+                          setAlertCartel("");
+                          refresh();
+                        }
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          const { value } = e.target
+                          const valor = value.trim()
+                          setAlertCartel(valor)
+                          if (valor) {
+                            setPagina(1);
+                            refresh(valor);
+                          }
+                        }
+                      }}
+                    />
+                    {/* </SoftBox> */}
+                  </Grid>
+                  <Grid item xs={1.7} /*sx={{ backgroundColor: "green" }}*/>
+                    {/* <SoftBox> */}
+                    <Link to="/incidentes/nuevo">
+                      <SoftButton variant="gradient" color="dark">
+                        <Icon>add</Icon>&nbsp; Agregar
+                      </SoftButton>
+                    </Link>
+                    {/* </SoftBox> */}
+                  </Grid>
+                  {/* </SoftBox> */}
+                </Grid>
+              </Grid>
+              {/* </SoftBox> */}
+            </Grid>
+            {loading ? (
+              <SoftBox display="flex" justifyContent="center" m={3}>
+                <CircularProgress color="primary" />
+              </SoftBox>
+            ) : (
+              <SoftBox
+                sx={{
+                  "& .MuiTableRow-root:not(:last-child)": {
+                    "& td": {
+                      borderBottom: ({ borders: { borderWidth, borderColor } }) =>
+                        `${borderWidth[1]} solid ${borderColor}`,
+                    },
+                  },
+                }}
+              >
+                {!datosVacios && alertCartel && noEncontrado ? (
+                  <>
+                    <Stack sx={{ width: '100%' }} spacing={2} mb={1}>
+                      <Alert sx={{ paddingLeft: 4 }} severity="error" onClose={() => {
+                        setFilters({
+                          inputSearch: "",
+                          inputSelect: "SELECCIONAR"
+                        })
+                        setAlertCartel("");
+                        refresh();
+                      }}>
+                        <SoftTypography
+                          component="span"
+                          variant="h5"
+                          fontWeight="medium"
+                          color="info"
+                          textGradient
+                          sx={{ display: "inline-block", width: "max-content" }}>
+                          {`NO SE ENCONTRARON RESULTADOS PARA: ${alertCartel}`}
+                        </SoftTypography>
+                      </Alert>
+                    </Stack>
+                  </>
+                ) : !datosVacios && alertCartel ? (
+                  <>
+                    <Stack sx={{ width: '100%' }} spacing={2} mb={1}>
+                      <Alert sx={{ paddingLeft: 4 }} severity="info" onClose={() => {
+                        setFilters({
+                          inputSearch: "",
+                          inputSelect: "SELECCIONAR"
+                        })
+                        setAlertCartel("");
+                        refresh();
+                      }}>
+                        <SoftTypography
+                          component="span"
+                          variant="h5"
+                          fontWeight="medium"
+                          color="info"
+                          textGradient
+                          sx={{ display: "inline-block", width: "max-content" }}>
+                          {`RESULTADOS ENCONTRADOS PARA: ${alertCartel}`}
+                        </SoftTypography>
+                      </Alert>
+                    </Stack>
+                    <Table columns={columns} rows={row} />
+                  </>
+                ) : (
+                  !datosVacios ? (
+                    <Table columns={columns} rows={row} />
+                  ) : (
+                    <Grid container justifyContent="center" alignItems="center" py={3}>
+                      <Grid item pb={3}>
+                        <SoftTypography variant="caption" color="text">
+                          No hay datos cargados
+                        </SoftTypography>
+                      </Grid>
+                    </Grid>
+                  )
+                )}
+              </SoftBox>
+            )}
+          </Card>
+          <Card sx={{ mt: 2 }}>
+            <Grid display="flex" alignItems="center" justifyContent="center" py={2}>
+              <Pagination
+                count={cantidadPaginas}
+                defaultPage={1}
+                siblingCount={1}
+                color="primary"
+                page={pagina}
+                onChange={handlePagination}
+              />
+            </Grid>
+          </Card>
+        </SoftBox>
+      </SoftBox>
+      <Footer />
+      <Modaldelete
+        open={openDelete}
+        handleClose={() => { setOpenDelete(false) }}
+        functionDelete={fntDe}
+      />
+      {/* </DashboardLayout> */}
+    </SoftBox>
+  );
 }
 
 export default Incidentes;

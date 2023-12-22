@@ -6,15 +6,14 @@ import { Card, Divider, Icon, Skeleton, Tooltip } from "@mui/material/";
 import Button from "@mui/material/Button";
 
 // Kaizen Dashboard components
-import SoftBox from "components/SoftBox";
-import SoftTypography from "components/SoftTypography";
-import { API_URL } from "services/config";
-import SoftAvatar from "components/SoftAvatar";
-import SoftButton from "components/SoftButton";
+import SoftBox from "../../SoftBox";
+import SoftTypography from "../../SoftTypography";
+// import { API_URL } from "services/config";
+import SoftAvatar from "../../SoftAvatar";
 
-import { MessageManager } from "context";
+import { MessageManager } from "../../../context";
 
-function ProfileCard({ color, empleado, setEmpleado, loading }) {
+function ProfileCard({ color, empleado, setEmpleado, loading = false }) {
   const { handleSnackbar } = useContext(MessageManager);
   const copyOnClick = (e) => {
     navigator.clipboard.writeText(e.target.innerText);
@@ -22,7 +21,7 @@ function ProfileCard({ color, empleado, setEmpleado, loading }) {
   };
 
   const handleVerCarnet = () => {
-    window.open(`${API_URL}/${empleado.fileCarnet}`, "_blank");
+    // window.open(`${API_URL}/${empleado.fileCarnet}`, "_blank");
   };
 
   return (
@@ -56,7 +55,7 @@ function ProfileCard({ color, empleado, setEmpleado, loading }) {
                 shadow="md"
                 borderRadius="lg"
                 variant="rounded"
-                src={empleado.foto ? `${API_URL}/${empleado.foto}` : null}
+                // src={empleado.foto ? `${API_URL}/${empleado.foto}` : null}
                 size="xxl"
               />
           </SoftBox>
@@ -310,7 +309,7 @@ ProfileCard.defaultProps = {
     sucursales: [{}],
   },
   setEmpleado: () => {},
-  loading: true,
+  loading: false,
 };
 
 // Typechecking props for the ProfileCard

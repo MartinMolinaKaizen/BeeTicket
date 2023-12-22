@@ -44,6 +44,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     // A function that sets the mini state of the sidenav.
     function handleMiniSidenav() {
       setMiniSidenav(dispatch, window.innerWidth < 1200);
+      // setMiniSidenav(dispatch, true);
     }
 
     /** 
@@ -78,8 +79,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
             <SidenavCollapse
               color={color}
               name={name}
-              // icon={<IconComponent />}
-              icon={<EmojiPeopleOutlinedIcon />}
+              icon={<IconComponent />}
               active={key === collapseName}
               noCollapse={noCollapse}
             />
@@ -90,8 +90,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
               color={color}
               key={key}
               name={name}
-              // icon={<IconComponent />}
-              icon={<EmojiPeopleOutlinedIcon />}
+              icon={<IconComponent />}
               active={key === collapseName}
               noCollapse={noCollapse}
             />
@@ -150,7 +149,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
         </SoftBox>
       </SoftBox>
       <Divider />
-      <List sx={{ overflowY: "auto", overflowX: "hidden"}}>{renderRoutes}</List>
+      <List sx={{ overflowY: "auto", overflowX: "hidden" }}>{renderRoutes}</List>
       <SoftBox pt={2} my={2} mx={2} mt="auto">
         <SoftBox mt={2}>
           <SoftButton

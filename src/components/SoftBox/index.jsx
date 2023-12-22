@@ -30,7 +30,8 @@ SoftBox.defaultProps = {
 
 // Typechecking props for the SoftBox
 SoftBox.propTypes = {
-  variant: PropTypes.oneOf(["contained", "gradient"]),
+  // variant: PropTypes.oneOf(["contained", "gradient"]),
+  variant: PropTypes.string,
   bgColor: PropTypes.string,
   color: PropTypes.string,
   opacity: PropTypes.number,
