@@ -262,11 +262,11 @@ function NewIncident() {
                       onChange={handleChange}
                       value={incidenteNew?.estado ?? ""}
                     >
-                      <MenuItem value={"Nuevo"}>Nuevo</MenuItem>
-                      <MenuItem value={"Activo"}>Activo</MenuItem>
-                      <MenuItem value={"En espera"}>En espera</MenuItem>
-                      <MenuItem value={"Resuelto"}>Resuelto</MenuItem>
-                      <MenuItem value={"Cerrado"}>Cerrado</MenuItem>
+                      <MenuItem value={"NUEVO"}>NUEVO</MenuItem>
+                      <MenuItem value={"ACTIVO"}>ACTIVO</MenuItem>
+                      <MenuItem value={"EN ESPERA"}>EN ESPERA</MenuItem>
+                      <MenuItem value={"RESUELTO"}>RESUELTO</MenuItem>
+                      <MenuItem value={"CERRADO"}>CERRADO</MenuItem>
                     </Select>
                   </Grid>
                   <Grid item xs={4}>
@@ -305,7 +305,7 @@ function NewIncident() {
                       getOptionLabel={(option) => option || ""}
                       options={receptores ?? []}
                       onInputChange={(e, newInputValue) => {
-                        incidenteNew({
+                        setIncidenteNew({
                           ...incidenteNew,
                           receptor: newInputValue?.toLocaleUpperCase(),
                         });
