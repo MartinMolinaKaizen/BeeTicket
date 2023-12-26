@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { urlBase } from '../../../services/config';
+import apiAxios from '../../../services/config';
 import { useState, useEffect, useContext } from 'react';
 import { UserContext } from '../../../context/user';
 
@@ -7,12 +6,11 @@ function usePutIncidente() {
 
   const [loadingPut, setLoading] = useState(false);
   const [exitoPut, setExito] = useState(null);
-  const { getToken, logout } = useContext(UserContext);
+  const { logout } = useContext(UserContext);
 
   const updateIncident = (editedIncident, id) => {
     setLoading(true)
-    axios.patch(urlBase + "incidente/" + id, editedIncident, {
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
+    apiAxios.patch("incidente/" + id, editedIncident, {
     }).then(response => {
       setExito(true)
     }).catch(error => {

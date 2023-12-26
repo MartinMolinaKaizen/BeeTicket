@@ -1,16 +1,14 @@
-import axios from 'axios';
-import { urlBase } from '../../../services/config';
+import apiAxios from '../../../services/config';
 import { useEffect, useContext, useRef } from 'react';
 import { UserContext } from '../../../context/user';
 
 function useGetProyectos(adapterProyects) {
 
-  const { getToken, logout } = useContext(UserContext);
+  const { logout } = useContext(UserContext);
   const controller = useRef(new AbortController());
 
   const refreshProyect = () => {
-    axios.get(urlBase + "proyectos", {
-      headers: { Authorization: `Bearer ${getToken()}` },
+    apiAxios.get("proyectos", {
       signal: controller.current.signal
     })
       .then(response => {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { urlBase } from '../../../services/config';
+import apiAxios from '../../../services/config';
 import { useState, useEffect, useContext } from 'react';
 import { UserContext } from '../../../context/user';
 import { MessageManager } from '../../../context';
@@ -15,9 +15,7 @@ function useDeleteIncidente() {
     try {
       setLoading(true);
 
-      const response = await axios.delete(urlBase + "incidente/" + id, {
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
-      });
+      const response = await apiAxios.delete("incidente/" + id);
 
       if (response.status === 200) {
         handleSnackbar("Incidente borrado", "success");

@@ -10,7 +10,7 @@ import SoftBox from "../../../components/SoftBox";
 import SoftButton from "../../../components/SoftButton";
 import SoftInput from "../../../components/SoftInput";
 // @mui material components
-import { Card, Icon, Grid, MenuItem, Select, InputLabel, Tooltip, Autocomplete, TextField, ListSubheader } from "@mui/material";
+import { Card, Icon, Grid, MenuItem, Select, InputLabel, Tooltip, Autocomplete, TextField, ListSubheader, Divider } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import InputDate from "./components/inputDate";
 import InputText from "./components/inputText";
@@ -24,13 +24,24 @@ import ModalLoadFiles from "../components/ModalLoadFiles";
 
 function NewIncident() {
   const [incidenteNew, setIncidenteNew] = useState({});
-  const { isAdmin, menu, titulos } = useGetPantallas();
   const [cardCreation, setCardCreation] = useState(false);
   const [createIncident, loadingPost, exitoPost] = usePostIncidente();
   const [updateIncident, loadingPut, exitoPut] = usePutIncidente()
   const [loading, setLoading] = useState(false);
   const [editar, indicentEdit] = useGetIncidentPK();
   const [modalLoadFiles, setModalLoadFiles] = useState(false);
+  const { isAdmin, pantallas, dataCreate, receptores } = useGetPantallas();
+
+  const renderOptions = (proyecto) => [
+    <ListSubheader key={proyecto.proyecto_desc}>
+      {proyecto.proyecto_desc}
+    </ListSubheader>,
+    ...proyecto.pantallas.map((pantalla) => (
+      <MenuItem key={pantalla.pantalla_id} value={pantalla.pantalla_id}>
+        {pantalla.pantalla_desc}
+      </MenuItem>
+    )),
+  ];
 
   function handleChange(event) {
     const { target: { value, name } } = event;
@@ -82,6 +93,7 @@ function NewIncident() {
     }
   }, [indicentEdit]);
 
+
   return (
     // <DashboardLayout>
     <SoftBox p={6}>
@@ -131,7 +143,7 @@ function NewIncident() {
                   &nbsp; *Campos obligatorios
                 </SoftTypography>
               </SoftBox>
-              <SoftBox px={3}>
+              <SoftBox px={8}>
                 <Grid container item spacing={2} justifyContent="center">
                   <Grid item xs={12} mb={-3} mt={2} fontWeight="bold" fontSize={14}></Grid>
                   <Grid item xs={3}>
@@ -140,7 +152,7 @@ function NewIncident() {
                         &nbsp;
                       </SoftTypography>
                     </InputLabel>
-                    <Tooltip title={"Cargar archivos"} placement="top">
+                    <Tooltip title={"Archivos adjuntos"} placement="top">
                       <SoftButton
                         variant="outlined"
                         color="secondary"
@@ -179,22 +191,17 @@ function NewIncident() {
                             Pantalla *
                           </SoftTypography>
                         </InputLabel>
-                        <Select defaultValue="" id="grouped-select" label="Grouping">
-                          <MenuItem value="">
+                        <Select
+                          onChange={handleChange}
+                          label="Grouping"
+                          id="grouped-select"
+                          name="pantalla_id"
+                          value={incidenteNew?.pantalla_id ?? ""}
+                        >
+                          <MenuItem value="" key="none">
                             <em>None</em>
                           </MenuItem>
-                          {/* {
-                            titulos.map((item) => (
-                              <ListSubheader key={item.proyecto_id}>
-                                {item.proyecto_desc}
-                              </ListSubheader>
-                            ))
-                          }
-                          {menu.map((item) => (
-                            <MenuItem key={item.pantalla_id} value={item.pantalla_desc}>
-                              {item.pantalla_desc}
-                            </MenuItem>
-                          ))} */}
+                          {pantallas.map((proyecto) => renderOptions(proyecto))}
                         </Select>
                       </>
                     ) : (<>
@@ -212,7 +219,7 @@ function NewIncident() {
                           value={incidenteNew?.pantalla_id ?? ""}
                         >
                           {
-                            menu.map((item) => (
+                            pantallas.map((item) => (
                               <MenuItem key={item.pantalla_id} value={item.pantalla_desc}>
                                 {item.pantalla_desc}
                               </MenuItem>
@@ -222,7 +229,7 @@ function NewIncident() {
                       </>
                     </>)}
                   </Grid>
-                  <Grid item xs={8} fontWeight="bold" fontSize={14}>
+                  <Grid item xs={4} fontWeight="bold" fontSize={14}>
                     &nbsp;
                   </Grid>
                   {/* <Grid item xs={4}>
@@ -241,14 +248,27 @@ function NewIncident() {
                       value={incidenteNew?.descripcionEmisor ?? ""}
                     />
                   </Grid> */}
-                  {/* <Grid item xs={4}>
-                    <InputText
+                  <Grid item xs={4}>
+                    <InputLabel htmlFor="estado">
+                      <SoftTypography component="label" variant="caption" fontWeight="bold">
+                        Estado
+                      </SoftTypography>
+                    </InputLabel>
+                    <Select
+                      labelId="estado"
                       name="estado"
-                      inputTitulo="Estado"
+                      defaultValue="Baja"
+                      inputProps={{ 'aria-label': 'Without label' }}
                       onChange={handleChange}
                       value={incidenteNew?.estado ?? ""}
-                    />
-                  </Grid> */}
+                    >
+                      <MenuItem value={"Nuevo"}>Nuevo</MenuItem>
+                      <MenuItem value={"Activo"}>Activo</MenuItem>
+                      <MenuItem value={"En espera"}>En espera</MenuItem>
+                      <MenuItem value={"Resuelto"}>Resuelto</MenuItem>
+                      <MenuItem value={"Cerrado"}>Cerrado</MenuItem>
+                    </Select>
+                  </Grid>
                   <Grid item xs={4}>
                     <InputLabel htmlFor="prioridad">
                       <SoftTypography component="label" variant="caption" fontWeight="bold">
@@ -268,17 +288,37 @@ function NewIncident() {
                       <MenuItem value={"Alta"}>Alta</MenuItem>
                     </Select>
                   </Grid>
-                  <Grid item xs={8} fontWeight="bold" fontSize={14}>
+                  <Grid item xs={4} fontWeight="bold" fontSize={14}>
                     &nbsp;
                   </Grid>
-                  {/* <Grid item xs={5}>
-                    <InputText
+                  <Grid item xs={4}>
+                    <InputLabel htmlFor="receptor">
+                      <SoftTypography component="label" variant="caption" fontWeight="bold">
+                        Asignar a
+                      </SoftTypography>
+                    </InputLabel>
+                    <Autocomplete
                       name="receptor"
-                      inputTitulo="Asignado a"
-                      onChange={handleChange}
-                      value={incidenteNew?.receptor ?? ""}
+                      freeSolo
+                      disableClearable
+                      value={incidenteNew?.receptor ?? null}
+                      getOptionLabel={(option) => option || ""}
+                      options={receptores ?? []}
+                      onInputChange={(e, newInputValue) => {
+                        incidenteNew({
+                          ...incidenteNew,
+                          receptor: newInputValue?.toLocaleUpperCase(),
+                        });
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          InputProps={{ ...params.InputProps, type: "search" }}
+                        />
+                      )}
                     />
-                  </Grid> */}
+                  </Grid>
+                  <Divider />
                   {/* <Grid item xs={1} fontWeight="bold" fontSize={14}>
                   &nbsp;
                 </Grid> */}
@@ -299,7 +339,7 @@ function NewIncident() {
                   </Grid> */}
                 </Grid>
               </SoftBox>
-              <SoftBox display="flex" justifyContent="flex-end" alignItems="center" px={3} pt={3}>
+              <SoftBox display="flex" justifyContent="flex-end" alignItems="center" px={8} pt={3}>
                 <SoftBox m={3}>
                   <Link to="/incidentes">
                     <SoftButton variant="gradient" color="dark" onClick={() => setIncidenteNew({})}>

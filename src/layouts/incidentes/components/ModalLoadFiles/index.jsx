@@ -4,7 +4,6 @@ import SoftButton from "../../../../components/SoftButton";
 import SoftTypography from "../../../../components/SoftTypography";
 import PropTypes from "prop-types";
 import { useState, useContext } from "react";
-import { urlBase } from "../../../../services/config";
 
 import { MessageManager } from "../../../../context";
 
@@ -13,8 +12,8 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  maxHeight: "90%",
-  width: "30%",
+  maxHeight: "100%",
+  width: "40%",
   overflow: "auto",
   py: 4,
 };
@@ -42,7 +41,7 @@ export default function ModalLoadFiles({ open, handleClose }) {
           <Card sx={style}>
             <SoftBox px={3}>
               <SoftTypography variant="h6" color="primary">
-                Subir Archivo
+                Cargar un Archivo
               </SoftTypography>
             </SoftBox>
             <SoftBox px={3}>
@@ -73,25 +72,34 @@ export default function ModalLoadFiles({ open, handleClose }) {
                 />
               </SoftBox>
               {archivo ?
-                (<SoftBox
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  sx={{ pt: 0.5 }}
-                >
-                  <SoftTypography variant="caption" component="p" color="text">
-                    {archivo?.name}
-                  </SoftTypography>
-                  <Icon
-                    onClick={() => {
-                      setArchivo(null);
-                      document.getElementById("input-image").value = "";
-                    }}
-                    sx={{ fontWeight: "regular", cursor: "pointer" }}
+                (<Card p={1} sx={{
+                  backgroundColor: "grey",
+                  maxHeight: "100%",
+                  width: "100%",
+                  overflow: "auto",
+                  px: 2,
+                  py: 1,
+                  my: 1
+                }}>
+                  <SoftBox
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
                   >
-                    cancel
-                  </Icon>
-                </SoftBox>)
+                    <SoftTypography variant="caption" component="p" color="text">
+                      {archivo?.name}
+                    </SoftTypography>
+                    <Icon
+                      onClick={() => {
+                        setArchivo(null);
+                        document.getElementById("input-image").value = "";
+                      }}
+                      sx={{ fontWeight: "regular", cursor: "pointer" }}
+                    >
+                      cancel
+                    </Icon>
+                  </SoftBox>
+                </Card>)
                 : null
               }
             </SoftBox>

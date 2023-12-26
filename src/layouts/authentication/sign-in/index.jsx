@@ -13,7 +13,7 @@ import SoftInput from "../../../components/SoftInput";
 import SoftButton from "../../../components/SoftButton";
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { urlBase, rolesConAcceso } from "../../../services/config";
+import apiAxios, { rolesConAcceso } from "../../../services/config";
 
 // Authentication layout components
 import CoverLayout from "../components/CoverLayout";
@@ -50,8 +50,8 @@ function SignIn() {
         password: password,
       };
 
-      axios
-        .post(urlBase + "login", variables)
+      apiAxios
+        .post("login", variables)
         .then((res) => {
           const user = {
             user: username,
@@ -60,8 +60,8 @@ function SignIn() {
           };
 
           if (res.data.token !== null) {
-            axios
-              .get(urlBase + "user-profile", {
+            apiAxios
+              .get("user-profile", {
                 headers: { Authorization: `Bearer ${user.token}` },
               })
               .then((res) => {

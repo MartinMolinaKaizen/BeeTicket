@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { urlBase } from '../../../services/config';
+import apiAxios from '../../../services/config';
 import { useState, useEffect, useContext, useRef } from 'react';
 import { UserContext } from '../../../context/user';
 
@@ -22,27 +22,15 @@ function useGetIncidentes(adapterInc, page) {
     let promesa = null;
     if (user?.proyecto === 'admin') {
       if (search) {
-        promesa = axios.get(urlBase + "searchIncidentes/" + search + "?page=" + page, {
-          headers: { Authorization: `Bearer ${getToken()}` },
-          signal: controller.current.signal
-        })
+        promesa = apiAxios.get("searchIncidentes/" + search + "?page=" + page, { signal: controller.current.signal });
       } else {
-        promesa = axios.get(urlBase + "incidentes" + "?page=" + page, {
-          headers: { Authorization: `Bearer ${getToken()}` },
-          signal: controller.current.signal
-        })
+        promesa = apiAxios.get("incidentes" + "?page=" + page, { signal: controller.current.signal });
       }
     } else {
       if (search) {
-        promesa = axios.get(urlBase + `searchIncidentes/${user?.proyecto}/${search}` + "?page=" + page, {
-          headers: { Authorization: `Bearer ${getToken()}` },
-          signal: controller.current.signal
-        })
+        promesa = apiAxios.get(`searchIncidentes/${user?.proyecto}/${search}` + "?page=" + page, { signal: controller.current.signal });
       } else {
-        promesa = axios.get(urlBase + `incidentes/${user?.proyecto}` + "?page=" + page, {
-          headers: { Authorization: `Bearer ${getToken()}` },
-          signal: controller.current.signal
-        })
+        promesa = apiAxios.get(`incidentes/${user?.proyecto}` + "?page=" + page, { signal: controller.current.signal });
       }
     }
 
@@ -82,8 +70,7 @@ function useGetIncidentes(adapterInc, page) {
   }
 
   const getIncByProyect = (proyect) => {
-    axios.get(urlBase + `incidentes/${proyect}` + "?page=" + page, {
-      headers: { Authorization: `Bearer ${getToken()}` },
+    apiAxios.get(`incidentes/${proyect}` + "?page=" + page, {
       signal: controller.current.signal
     })
       .then(response => {

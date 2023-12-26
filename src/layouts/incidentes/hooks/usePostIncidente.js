@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { urlBase } from '../../../services/config';
+import apiAxios from '../../../services/config';
 import { useState, useContext } from 'react';
 import { UserContext } from '../../../context/user';
 
@@ -7,12 +6,11 @@ function usePostIncidente() {
 
   const [loadingPost, setLoading] = useState(false);
   const [exitoPost, setExito] = useState(null);
-  const { getToken, logout } = useContext(UserContext);
+  const { logout } = useContext(UserContext);
 
   const createIncident = (newIncident) => {
     setLoading(true)
-    axios.post(urlBase + "incidentes", newIncident, {
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
+    apiAxios.post("incidentes", newIncident, {
     }).then(response => {
       setExito(true)
     }).catch(error => {
