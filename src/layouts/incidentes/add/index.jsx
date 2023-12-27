@@ -70,7 +70,7 @@ function NewIncident() {
       empresa: null,
       emisor: null,
       descripcionEmisor: null,
-      estado: null,
+      estado: "NUEVO",
       prioridad: "Baja",
       receptor: null,
       respuestaReceptor: null,
@@ -294,7 +294,7 @@ function NewIncident() {
                   <Grid item xs={4}>
                     <InputLabel htmlFor="receptor">
                       <SoftTypography component="label" variant="caption" fontWeight="bold">
-                        Asignar a
+                        Asignado a
                       </SoftTypography>
                     </InputLabel>
                     <Autocomplete

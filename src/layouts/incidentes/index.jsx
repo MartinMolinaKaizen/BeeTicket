@@ -128,21 +128,18 @@ function Incidentes() {
   }, [pagina]);
 
   return (
-    // <DashboardLayout>
     <SoftBox p={4}>
       <DashboardNavbar />
       <SoftBox py={3}>
         <SoftBox mb={3}>
           <Card>
-            <Grid container spacing={2} alignItems="center" /*sx={{ backgroundColor: "pink" }}*/ px={3}>
-              {/* <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}> */}
-              <Grid item xs={3} /*sx={{ backgroundColor: "green" }}*/>
+            <Grid container spacing={2} alignItems="center" px={3}>
+              <Grid item xs={3}>
                 <SoftTypography variant="button" fontWeight="bold" textTransform="capitalize">Incidentes</SoftTypography>
               </Grid>
               <Grid item xs={9}>
-                <Grid container pt={2} pb={3} justifyContent="end" alignItems="center" /*sx={{ backgroundColor: "lightblue" }}*/>
-                  {/* <SoftBox display="flex" justifyContent="end" alignItems="center" py={3}> */}
-                  <Grid item xs={7} pl={5} pr={40} pb={isAdmin ? 2.5 : 11} /*sx={{ backgroundColor: "yellow" }}*/>
+                <Grid container pt={2} pb={3} justifyContent="end" alignItems="center">
+                  <Grid item xs={7} pl={5} pr={40} pb={isAdmin ? 2.5 : 11}>
                     {
                       isAdmin ? (<>
                         <InputLabel>
@@ -189,8 +186,7 @@ function Incidentes() {
                       </>) : null
                     }
                   </Grid>
-                  <Grid item xs={3} mr={2} /*sx={{ backgroundColor: "blue" }}*/>
-                    {/* <SoftBox mr={2}> */}
+                  <Grid item xs={3} mr={2}>
                     <SoftInput
                       placeholder="Buscar..."
                       icon={{ component: "search", direction: "left" }}
@@ -218,21 +214,16 @@ function Incidentes() {
                         }
                       }}
                     />
-                    {/* </SoftBox> */}
                   </Grid>
-                  <Grid item xs={1.7} /*sx={{ backgroundColor: "green" }}*/>
-                    {/* <SoftBox> */}
+                  <Grid item xs={1.7}>
                     <Link to="/incidentes/nuevo">
                       <SoftButton variant="gradient" color="dark">
                         <Icon>add</Icon>&nbsp; Agregar
                       </SoftButton>
                     </Link>
-                    {/* </SoftBox> */}
                   </Grid>
-                  {/* </SoftBox> */}
                 </Grid>
               </Grid>
-              {/* </SoftBox> */}
             </Grid>
             {loading ? (
               <SoftBox display="flex" justifyContent="center" m={3}>

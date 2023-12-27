@@ -1,4 +1,3 @@
-import axios from 'axios';
 import apiAxios from '../../../services/config';
 import { useState, useEffect, useContext, useRef } from 'react';
 import { UserContext } from '../../../context/user';
